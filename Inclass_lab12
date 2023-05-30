@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+std::vector<int> dijkstra(const std::vector<std::vector<int>>& graph, int source) {
+    int cities = graph.size();
+    std::vector<int> distances(cities, INT_MAX);
+    distances[source] = 0;
+    std::vector<bool> visited(cities, false);
+
+    for (int _ = 0; _ < cities; ++_) {
+        int min_distance = INT_MAX;
+        int min_city = 0;
+
+        for (int i = 0; i < cities; ++i) {
+            if (!visited[i] && distances[i] <= min_distance) {
+                min_distance = distances[i];
+                min_city = i;
+            }
+        }
+
+        visited[min_city] = true;
+
+        for (int j = 0; j < cities; ++j) {
+            if (!visited[j] && graph[min_city][j] != 0 && distances[min_city] + graph[min_city][j] < distances[j]) {
+                distances[j] = distances[min_city] + graph[min_city][j];
+            }
+        }
+    }
+
+    return distances;
+}
+
+int main() {
+    // Weighted adjacency matrix
+    std::vector<std::vector<int>> graph = {
+        {0, 10, 0, 0, 15, 5},
+        {10, 0, 10, 30, 0, 0},
+        {0, 10, 0, 12, 5, 0},
+        {0, 30, 12, 0, 0, 20},
+        {15, 0, 5, 0, 0, 0},
+        {5, 0, 0, 20, 0, 0}
+    };
+
+    int num_cities = graph.size();
+
+    // Step 3: Finding shortest time from each source city
+    for (int source_city = 0; source_city < num_cities; ++source_city) {
+        std::vector<int> shortest_distances = dijkstra(graph, source_city);
+        std::cout << "Shortest distances from City " << source_city << ": ";
+        for (int distance : shortest_distances) {
+            std::cout << distance << " ";
+        }
+        std::cout << std::endl;
+    }
+
+   }
